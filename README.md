@@ -9,7 +9,7 @@ Designed to build static libraries out of 3rd party projects without having to d
 
 ## configuration
 
-static-builder.exe uses a file named static-builder-settings.json to specify user settings.
+static-builder.exe uses a file named static-builder-settings.json to specify user settings. Make the file and place it in the same directory as static-builder.exe
 
 ### Exclude a directory
 
