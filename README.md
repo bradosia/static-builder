@@ -16,8 +16,7 @@ static-builder.exe uses a file named static-builder-settings.json to specify use
 ```json
 {
   "exclude" : {
-    0 : "/foo",
-    1 : "/bar"
+    "/foo", "/bar"
   }
 }
 ```
