@@ -25,6 +25,8 @@ namespace fs = std::filesystem;
 
 int main(int argc, char **argv) {
 	std::string libraryName = "libstatic.a";
+	std::string CC = "gcc";
+	std::string CFLAGS = "";
 	rapidjson::Document d;
 	std::vector<fs::path> directories, headerFiles, cppFiles, includePaths,
 			libraryFiles;
@@ -56,6 +58,18 @@ int main(int argc, char **argv) {
 				rapidjson::SizeType n = a.Size(); // rapidjson uses SizeType instead of size_t.
 				for (rapidjson::SizeType i = 0; i < n; i++) {
 					includePaths.emplace_back(a[i].GetString());
+				}
+			}
+			if (d.HasMember("CC") && d["CC"].IsString()) {
+				std::string temp = d["CC"].GetString();
+				if (temp.length() > 0) {
+					CC = temp;
+				}
+			}
+			if (d.HasMember("CFLAGS") && d["CFLAGS"].IsString()) {
+				std::string temp = d["CFLAGS"].GetString();
+				if (temp.length() > 0) {
+					CFLAGS = temp;
 				}
 			}
 		}
@@ -95,7 +109,7 @@ int main(int argc, char **argv) {
 	// include string
 	std::string includeString = "";
 	for (fs::path &p : includePaths) {
-		includeString.append(" -I").append(p.string());
+		includeString.append(" -I\"").append(p.string()).append("\"");
 	}
 	for (fs::path &p : directories) {
 		//includeString.append(" -I").append(p.string());
@@ -112,8 +126,8 @@ int main(int argc, char **argv) {
 		objectFile = objectParentPath
 				/ std::string(p.stem().string()).append(".o");
 		// 2>&1 at end will redirect stderr to stdout
-		cmd.append("g++ -c -o ").append(objectFile.string()).append(" ").append(
-				p.string()).append(" -O3").append(includeString).append(
+		cmd.append(CC).append(" -c -o ").append(objectFile.string()).append(" ").append(
+				p.string()).append(" ").append(CFLAGS).append(includeString).append(
 				" 2>&1");
 		std::cout << cmd << "\n";
 		try {
